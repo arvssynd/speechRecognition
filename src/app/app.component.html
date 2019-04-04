@@ -4,16 +4,18 @@
   <option></option>
 </select>
 
-<mat-slide-toggle style="margin: 15px" [color]="color" [checked]="checked" [disabled]="disabled"
-  (change)="manageSpeechRecognition($event)">
-  Microphone {{checked ? 'ON' : 'OFF'}}
-</mat-slide-toggle>
-
-<mat-form-field>
-  <mat-label>Favorite food</mat-label>
+<mat-form-field appearance="outline" style="margin:15px">
+  <mat-label>Select option</mat-label>
   <mat-select data-speech="selectOption">
     <mat-option *ngFor="let select of selectBox" [value]="select.value">
       {{select.value}}
     </mat-option>
   </mat-select>
 </mat-form-field>
+
+<mat-slide-toggle style="margin: 15px" [color]="color" [checked]="checked" [disabled]="disabled"
+  (change)="manageSpeechRecognition($event)">
+  Microphone {{checked ? 'ON' : 'OFF'}}
+</mat-slide-toggle>
+
+<button id="bs-button" data-speech="find" (click)="scroll()">buttone</button>

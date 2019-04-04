@@ -157,6 +157,16 @@ export class SpeechToTextService {
                     }, 10000);
                 }
             }
+            // else if (this.vocalCommand.action === VocalAction.Scroll) {
+            //     const htmlToSelectScroll = document.querySelector('[ng-reflect-klass="mat-select-panel mat-primary"]');
+            //     if (htmlToSelectScroll) {
+            //         if (this.vocalCommand.scrollAction) {
+            //             htmlToSelectScroll.scrollTop += 250;
+            //         } else {
+            //             htmlToSelectScroll.scrollTop -= 250;
+            //         }
+            //     }
+            // }
         } else if (this.vocalCommandPrev) {
             const htmlElement = document.querySelector('[data-speech="' + this.vocalCommandPrev.dataSpeech + '"]');
 

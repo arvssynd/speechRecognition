@@ -3,6 +3,7 @@ export class VocalCommand {
     dataSpeech: string;
     grammar: string;
     action: VocalAction;
+    scrollAction?: boolean;
     actionDescription: string;
 }
 
@@ -10,7 +11,8 @@ export enum VocalAction {
     Start,
     Text,
     Button,
-    Select
+    Select,
+    Scroll
 }
 
 export class Settings {

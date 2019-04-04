@@ -59,6 +59,28 @@ export class ServiceHelper {
 
         this.commands.push(cmdToAdd);
 
+        cmdToAdd = {
+            page: 'app',
+            action: VocalAction.Scroll,
+            scrollAction: false,
+            grammar: 'su',
+            dataSpeech: '',
+            actionDescription: null
+        };
+
+        this.commands.push(cmdToAdd);
+
+        cmdToAdd = {
+            page: 'app',
+            action: VocalAction.Scroll,
+            scrollAction: true,
+            grammar: 'giù',
+            dataSpeech: '',
+            actionDescription: null
+        };
+
+        this.commands.push(cmdToAdd);
+
         return this.commands;
     }
 }
