@@ -8,6 +8,10 @@ import { TextToSpeechService } from 'src/services/textToSpeech.service';
 import { ServiceHelper } from 'src/helpers/service.helper';
 import { HttpClientModule } from '@angular/common/http';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSlideToggleModule } from '@angular/material';
+
+
 @NgModule({
   declarations: [
     AppComponent
@@ -15,7 +19,9 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatSlideToggleModule
   ],
   providers: [
     SpeechToTextService,
