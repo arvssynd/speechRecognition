@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Output, EventEmitter } from "@angular/core";
 import { SpeechRecognizer, SpeechConfig, AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { ServiceHelper } from "src/helpers/service.helper";
 import { Observable, Subscriber } from "rxjs";
@@ -12,40 +12,35 @@ export class SpeechToTextService {
     private speechRecognizedObserver: Observable<string>;
     private speechRecognizedSubscriber: Subscriber<string>;
     private vocalCommand: VocalCommand;
+    private vocalCommandPrev: VocalCommand;
     private vocalCommands: VocalCommand[];
     private intervalCommandId: number;
     private isStartCommandValid: boolean;
     private microphoneDisconnectedSound: boolean;
+    private _audioNotification: HTMLAudioElement;
 
     constructor(private serviceHelper: ServiceHelper
         , private textToSpeechService: TextToSpeechService) { }
 
     initialize() {
-        this.microphoneDisconnectedSound = true;
-
         this.vocalCommands = this.serviceHelper.getCommands();
-
         const speechConfig = SpeechConfig.fromSubscription(this.serviceHelper.settings.subscriptionKey, this.serviceHelper.settings.serviceRegion);
         speechConfig.speechRecognitionLanguage = this.serviceHelper.settings.language;
         const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
         this.recognizer = new SpeechRecognizer(speechConfig, audioConfig);
-        console.log('1');
+        this.microphoneDisconnectedSound = true;
     }
 
     start() {
         try {
-            console.log('2');
             if (!this.isInitialized) {
-                console.log('3');
                 this.recognizer.startContinuousRecognitionAsync();
                 this.isInitialized = true;
 
                 this.speechRecognizedObserver = new Observable<string>((observer) => {
                     const _this = this;
                     this.speechRecognizedSubscriber = observer;
-                    console.log(observer);
                     this.recognizer.recognized = function (s, e) {
-                        console.log(e);
                         _this.checkCommand(e.result.text.toLowerCase()
                             .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''));
                     };
@@ -60,6 +55,11 @@ export class SpeechToTextService {
         try {
             if (this.isInitialized) {
                 this.recognizer.stopContinuousRecognitionAsync();
+
+                if (this.intervalCommandId) {
+                    window.clearInterval(this.intervalCommandId);
+                }
+
                 console.log('speechToText - end');
                 this.isInitialized = false;
             }
@@ -85,13 +85,15 @@ export class SpeechToTextService {
 
     private checkCommand(textRecognized: string) {
         const _this = this;
+
         this.speechRecognizedSubscriber.next(textRecognized);
 
         this.vocalCommand = this.vocalCommands.find(x => textRecognized.indexOf(x.grammar) !== -1);
 
         if (this.vocalCommand) {
+            this.vocalCommandPrev = null;
             if (this.vocalCommand.action === VocalAction.Start) {
-                this.serviceHelper.onMicrophoneStart();
+                this.onMicrophoneStart();
                 this.microphoneDisconnectedSound = true;
 
                 if (this.intervalCommandId) {
@@ -105,16 +107,18 @@ export class SpeechToTextService {
                 this.intervalCommandId = window.setInterval(function () {
                     this.listening = false;
                     if (_this.microphoneDisconnectedSound) {
-                        _this.serviceHelper.onMicrophoneClose();
+                        _this.onMicrophoneClose();
                         _this.microphoneDisconnectedSound = false;
+                        window.clearInterval();
                     }
 
-                    console.log(_this.intervalCommandId);
-                    console.log(_this.microphoneDisconnectedSound);
                     console.log('fine ascolto');
                     _this.resetCommands();
                 }, 10000);
             } else if (this.isStartCommandValid) {
+
+                this.vocalCommandPrev = this.vocalCommand;
+
                 if (this.intervalCommandId) {
                     window.clearInterval(this.intervalCommandId);
                 }
@@ -122,14 +126,16 @@ export class SpeechToTextService {
                 console.log('SpeechTotext - command ', this.vocalCommand);
                 const htmlElement = document.querySelector('[data-speech="' + this.vocalCommand.dataSpeech + '"]') as HTMLElement;
 
+                console.log('textToSpeech - ', this.vocalCommand.actionDescription);
                 switch (this.vocalCommand.action) {
                     case VocalAction.Text:
                         htmlElement.focus();
-                        console.log('textToSpeech - ', this.vocalCommand.actionDescription);
                         break;
                     case VocalAction.Button:
                         htmlElement.click();
-                        console.log('textToSpeech - ', this.vocalCommand.actionDescription);
+                        break;
+                    case VocalAction.Select:
+                        htmlElement.click();
                         break;
                     default:
                         break;
@@ -142,19 +148,69 @@ export class SpeechToTextService {
                 if (this.intervalCommandId) {
                     this.intervalCommandId = window.setInterval(function () {
                         if (_this.microphoneDisconnectedSound) {
-                            _this.serviceHelper.onMicrophoneClose();
+                            _this.onMicrophoneClose();
                             _this.microphoneDisconnectedSound = false;
                         }
+
                         console.log('fine ascolto');
                         _this.resetCommands();
                     }, 10000);
                 }
             }
+        } else if (this.vocalCommandPrev) {
+            const htmlElement = document.querySelector('[data-speech="' + this.vocalCommandPrev.dataSpeech + '"]');
+
+            switch (this.vocalCommandPrev.action) {
+                case VocalAction.Text:
+                    (htmlElement as HTMLInputElement).value = textRecognized;
+                    break;
+                case VocalAction.Select:
+                    textRecognized = this.speechToNumber(textRecognized, true);
+                    const htmlToSelect = document.querySelector('[id="mat-option-' + textRecognized + '"]') as HTMLSelectElement;
+                    htmlToSelect.click();
+                    break;
+                default:
+                    break;
+            }
+            this.vocalCommandPrev = null;
         }
+
     }
 
     resetCommands() {
         this.isStartCommandValid = false;
         this.vocalCommand = null;
+    }
+
+    private onMicrophoneStart() {
+        this.loadAudioNotification("microphone_connected.mp3");
+    }
+
+    private onMicrophoneClose() {
+        this.loadAudioNotification("microphone_disconnected.mp3");
+    }
+
+    private loadAudioNotification(track: string): void {
+        this._audioNotification = new Audio();
+        this._audioNotification.src = "../assets/" + track;
+        this._audioNotification.load();
+        this._audioNotification.play();
+    }
+
+    private speechToNumber(text: string, forSelect: boolean = false): string {
+        if (text.indexOf("uno") !== -1) {
+            if (forSelect) {
+                return "0";
+            } else {
+                return "1";
+            }
+        }
+
+        if (forSelect) {
+            const textToNumber = +text;
+            return (textToNumber - 1).toString();
+        } else {
+            return text;
+        }
     }
 }

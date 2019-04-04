@@ -9,7 +9,8 @@ export class VocalCommand {
 export enum VocalAction {
     Start,
     Text,
-    Button
+    Button,
+    Select
 }
 
 export class Settings {

@@ -1,7 +1,19 @@
 <input type="text" data-speech="balanceselection" />
 <button id="bs-button" data-speech="find" (click)="cerca()">buttone</button>
-<br />
-<!-- <mat-slide-toggle style="margin: 15px" [color]="color" [checked]="checked" [disabled]="disabled"
+<select *ngFor="let item of items">
+  <option></option>
+</select>
+
+<mat-slide-toggle style="margin: 15px" [color]="color" [checked]="checked" [disabled]="disabled"
   (change)="manageSpeechRecognition($event)">
-  Microphone OFF/ON
-</mat-slide-toggle> -->
+  Microphone {{checked ? 'ON' : 'OFF'}}
+</mat-slide-toggle>
+
+<mat-form-field>
+  <mat-label>Favorite food</mat-label>
+  <mat-select data-speech="selectOption">
+    <mat-option *ngFor="let select of selectBox" [value]="select.value">
+      {{select.value}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -30,7 +30,7 @@ export class TextToSpeechService {
         let _headers: HttpHeaders = new HttpHeaders();
         _headers = _headers.append('Content-Type', 'application/json');
         _headers = _headers.append(
-            'Ocp-Apim-Subscription-Key', '79504b01445a4150aa6b426f210c5634'
+            'Ocp-Apim-Subscription-Key', '4315ed0127cd439f9576798c42c657eb'
         );
 
         return this.http.post('https://westeurope.api.cognitive.microsoft.com/sts/v1.0/issuetoken', '', { headers: _headers, responseType: 'text' }

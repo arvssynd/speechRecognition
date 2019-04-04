@@ -9,7 +9,7 @@ import { ServiceHelper } from 'src/helpers/service.helper';
 import { HttpClientModule } from '@angular/common/http';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSlideToggleModule } from '@angular/material';
+import { MatSlideToggleModule, MatSelectModule, MatFormFieldModule, MatOptionModule } from '@angular/material';
 
 
 @NgModule({
@@ -21,7 +21,10 @@ import { MatSlideToggleModule } from '@angular/material';
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatOptionModule
   ],
   providers: [
     SpeechToTextService,
