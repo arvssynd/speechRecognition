@@ -115,8 +115,16 @@ export class SpeechToTextService {
                     console.log('fine ascolto');
                     _this.resetCommands();
                 }, 10000);
+            } else if (this.vocalCommand.action === VocalAction.Scroll) {
+                const htmlToSelectScroll = document.querySelector('[ng-reflect-klass="mat-select-panel mat-primary"]');
+                if (htmlToSelectScroll) {
+                    if (this.vocalCommand.scrollAction) {
+                        htmlToSelectScroll.scrollTop += 250;
+                    } else {
+                        htmlToSelectScroll.scrollTop -= 250;
+                    }
+                }
             } else if (this.isStartCommandValid) {
-
                 this.vocalCommandPrev = this.vocalCommand;
 
                 if (this.intervalCommandId) {
@@ -157,16 +165,6 @@ export class SpeechToTextService {
                     }, 10000);
                 }
             }
-            // else if (this.vocalCommand.action === VocalAction.Scroll) {
-            //     const htmlToSelectScroll = document.querySelector('[ng-reflect-klass="mat-select-panel mat-primary"]');
-            //     if (htmlToSelectScroll) {
-            //         if (this.vocalCommand.scrollAction) {
-            //             htmlToSelectScroll.scrollTop += 250;
-            //         } else {
-            //             htmlToSelectScroll.scrollTop -= 250;
-            //         }
-            //     }
-            // }
         } else if (this.vocalCommandPrev) {
             const htmlElement = document.querySelector('[data-speech="' + this.vocalCommandPrev.dataSpeech + '"]');
 
@@ -208,6 +206,7 @@ export class SpeechToTextService {
     }
 
     private speechToNumber(text: string, forSelect: boolean = false): string {
+        // verificare come lo legge in inglese
         if (text.indexOf("uno") !== -1) {
             if (forSelect) {
                 return "0";
