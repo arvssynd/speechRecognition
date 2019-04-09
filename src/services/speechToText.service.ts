@@ -20,7 +20,8 @@ export class SpeechToTextService {
     private _audioNotification: HTMLAudioElement;
 
     constructor(private serviceHelper: ServiceHelper
-        , private textToSpeechService: TextToSpeechService) { }
+        , private textToSpeechService: TextToSpeechService
+    ) { }
 
     initialize() {
         this.vocalCommands = this.serviceHelper.getCommands();
@@ -171,6 +172,7 @@ export class SpeechToTextService {
             switch (this.vocalCommandPrev.action) {
                 case VocalAction.Text:
                     (htmlElement as HTMLInputElement).value = textRecognized;
+                    //this.changeDetector.detectChanges();
                     break;
                 case VocalAction.Select:
                     textRecognized = this.speechToNumber(textRecognized, true);

@@ -6,7 +6,7 @@
 
 <mat-form-field appearance="outline" style="margin:15px">
   <mat-label>Select option</mat-label>
-  <mat-select data-speech="selectOption">
+  <mat-select data-speech="selectOption" [(value)]="pippo">
     <mat-option *ngFor="let select of selectBox; let i = index" [value]="select.value">
       {{select.value}}<span *ngIf="checked"> - {{i + 1}}</span>
     </mat-option>
@@ -17,3 +17,22 @@
   (change)="manageSpeechRecognition($event)">
   Microphone {{checked ? 'ON' : 'OFF'}}
 </mat-slide-toggle>
+
+<button (click)="ciao()"> ciao</button>
+
+
+
+<section class="example-section">
+  <label class="example-margin">Align:</label>
+  <mat-radio-group>
+    <mat-radio-button aria-label="uof" data-speech="sample" class="example-margin" value="sample">sample
+    </mat-radio-button>
+    <mat-radio-button data-speech="standard" class="example-margin" value="standard">standard</mat-radio-button>
+    <mat-radio-button data-speech="ext" class="example-margin" value="ext">Uof
+    </mat-radio-button>
+  </mat-radio-group>
+</section>
+
+<button (click)="checkbox('sample')">sample</button>
+<button (click)="checkbox('standard')">standard</button>
+<button (click)="checkbox('ext')">ext</button>

@@ -9,7 +9,7 @@ export class ServiceHelper {
     constructor() {
         this._settings = new Settings();
         this._settings.serviceRegion = "westeurope";
-        this._settings.subscriptionKey = "4315ed0127cd439f9576798c42c657eb";
+        this._settings.subscriptionKey = "34503c2e2f2f42cd89e9db68cb3a6254";
         this._settings.language = "it-IT";
     }
 
@@ -22,7 +22,7 @@ export class ServiceHelper {
         let cmdToAdd: VocalCommand = {
             page: 'app',
             action: VocalAction.Start,
-            grammar: 'ok evo',
+            grammar: 'ok',
             dataSpeech: 'vocal-recognition-start',
             actionDescription: null
         };
@@ -32,7 +32,7 @@ export class ServiceHelper {
         cmdToAdd = {
             page: 'app',
             action: VocalAction.Text,
-            grammar: 'seleziona bilancia',
+            grammar: 'seleziona',
             dataSpeech: 'balanceselection',
             actionDescription: 'insert balance id'
         };

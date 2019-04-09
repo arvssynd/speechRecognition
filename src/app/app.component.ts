@@ -11,6 +11,7 @@ import { MatSlideToggleChange } from '@angular/material';
 export class AppComponent implements OnInit {
   public checked: boolean;
   private selectBox: any[] = [];
+  public pippo: any;
 
   constructor(private speechToTextService: SpeechToTextService) {
   }
@@ -47,5 +48,21 @@ export class AppComponent implements OnInit {
       }
       console.log(audioDevices);
     });
+  }
+
+  ciao() {
+    console.log(this.pippo);
+  }
+
+  checkbox(textRecognized: string) {
+    const htmlToCheck = document.querySelector('[data-speech="' + textRecognized + '"]') as HTMLElement;
+    // const htmlToCheck = document.querySelector('[class="mat-radio-label"]') as HTMLElement;
+
+    // htmlToCheck.click();
+    if (htmlToCheck.hasChildNodes) {
+      (htmlToCheck.firstChild as HTMLElement).click();
+    }
+
+    // htmlToCheck.dispatchEvent(new Event('input'));
   }
 }
